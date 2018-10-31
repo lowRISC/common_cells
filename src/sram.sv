@@ -16,7 +16,7 @@ module sram #(
     int unsigned NUM_WORDS  = 1024
 )(
    input  logic                          clk_i,
-
+   input  logic                          rst_ni,
    input  logic                          req_i,
    input  logic                          we_i,
    input  logic [$clog2(NUM_WORDS)-1:0]  addr_i,

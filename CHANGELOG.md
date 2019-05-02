@@ -4,6 +4,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Added exponential backoff window module
+
+### Changed
+- Parametric payload data type for `rr_arb_tree`
+
+### Deprecated
+- The following arbiter implementations are deprecated and superseded by `rr_arb_tree`:
+  - Priority arbiter `prioarbiter`
+  - Round-robin arbiter `rrarbiter`
+  - Stream arbiter `stream_arbiter`
+  - Flushable stream arbiter `stream_arbiter_flushable`
+
+### Fixed
+
+## 1.12.0 - 2019-04-09
+
+### Added
+- Add priority arbiter
+- Add Pseudo Least Recently Used tree
+- Add round robin arbiter mux tree
+
+### Changed
+- Add selectable arbiter implementation for `stream_arbiter` and `stream_arbiter_flushable`. One can choose between priority (`prio`) and round-robin arbitration (`rr`).
+- Add `$onehot0` assertion in one-hot to bin
+- Rework `rrarbiter` unit (uses `rr_arb_tree` implementation underneath)
+
+## 1.11.0 - 2019-03-20
+
+### Added
+- Add stream fork
+- Add fall-through register
+- Add stream filter
+- Add ID queue
+
+### Changed
+- `sync_wedge` use existing synchronizer. This defines a single place where a tech-specific synchronizer can be defined.
+
+### Fixed
+- Fix FIFO push and pop signals in `stream_register` to observe interface prerequisites.
+- In `fifo_v3`, fix data output when pushing into empty fall-through FIFO. Previously, the data
+  output of an empty fall-through FIFO with data at its input (and `push_i=1`) depended on
+  `pop_i`: When `pop_i=0`, old, invalid data were visible at the output (even though `empty_o=0`,
+  indicating that the data output is valid). Only when `pop_i=1`, the data from the input fell
+  through. One consequence of this bug was that `data_o` of the `fall_through_register` could change
+  while `valid_o=1`, violating the basic stream specification.
+
 ## 1.10.0 - 2018-12-18
 
 ### Added

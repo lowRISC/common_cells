@@ -8,27 +8,19 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-// Antonio Pullini <pullinia@iis.ee.ethz.ch>
+// Stream filter: If `drop_i` is `1`, signal `ready` to the upstream regardless of the downstream,
+// and do not propagate `valid` downstream.  Otherwise, connect upstream to downstream.
+module stream_filter (
+    input  logic valid_i,
+    output logic ready_o,
 
-module sync #(
-    parameter int unsigned STAGES = 2
-) (
-    input  logic clk_i,
-    input  logic rst_ni,
-    input  logic serial_i,
-    output logic serial_o
+    input  logic drop_i,
+
+    output logic valid_o,
+    input  logic ready_i
 );
 
-   logic [STAGES-1:0] reg_q;
-
-    always_ff @(posedge clk_i, negedge rst_ni) begin
-        if (!rst_ni) begin
-            reg_q <= 'h0;
-        end else begin
-            reg_q <= {reg_q[STAGES-2:0], serial_i};
-        end
-    end
-
-    assign serial_o = reg_q[STAGES-1];
+    assign valid_o = drop_i ? 1'b0 : valid_i;
+    assign ready_o = drop_i ? 1'b1 : ready_i;
 
 endmodule

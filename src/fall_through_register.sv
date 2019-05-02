@@ -8,10 +8,11 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-/// Register with a simple stream-like ready/valid handshake.
-/// This register does not cut combinatorial paths on all control signals; if you need a complete
-/// cut, use the `spill_register`.
-module stream_register #(
+// Fall-through register with a simple stream-like ready/valid handshake.
+// This register does not cut combinatorial paths on any signals: in case the module at its output
+// is ready to accept data within the same clock cycle, they are forwarded. Use this module to get a
+// 'default ready' behavior towards the input.
+module fall_through_register #(
     parameter type T = logic  // Vivado requires a default value for type parameters.
 ) (
     input  logic    clk_i,          // Clock
@@ -32,7 +33,7 @@ module stream_register #(
             fifo_full;
 
     fifo_v2 #(
-        .FALL_THROUGH   (1'b0),
+        .FALL_THROUGH   (1'b1),
         .DATA_WIDTH     ($size(T)),
         .DEPTH          (1),
         .dtype          (T)
